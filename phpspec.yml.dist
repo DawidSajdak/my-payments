@@ -1,0 +1,7 @@
+suites:
+    my-payments:
+        spec_path: ./tests/MyPayments
+        spec_prefix: Spec
+        psr4_prefix: MyPayments
+        namespace: MyPayments
+        src_path: ./src/MyPayments

@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\MyPayments\Domain\Payment;
+namespace Spec\MyPayments\Domain\Payment;
 
 use MyPayments\Domain\Payment\PaymentDetails\AccountNumber;
 use PhpSpec\ObjectBehavior;
@@ -10,7 +10,7 @@ use SebastianBergmann\Money\Money;
 
 /**
  * Class PaymentDetailsSpec
- * @package spec\MyPayments\Domain\Payment
+ * @package Spec\MyPayments\Domain\Payment
  */
 class PaymentDetailsSpec extends ObjectBehavior
 {

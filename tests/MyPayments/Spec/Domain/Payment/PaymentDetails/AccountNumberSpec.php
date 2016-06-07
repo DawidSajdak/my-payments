@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\MyPayments\Domain\Payment\PaymentDetails;
+namespace Spec\MyPayments\Domain\Payment\PaymentDetails;
 
 use MyPayments\Domain\Exception\InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
@@ -8,7 +8,7 @@ use Prophecy\Argument;
 
 /**
  * Class AccountNumberSpec
- * @package spec\MyPayments\Domain\Payment\PaymentDetails
+ * @package Spec\MyPayments\Domain\Payment\PaymentDetails
  */
 class AccountNumberSpec extends ObjectBehavior
 {

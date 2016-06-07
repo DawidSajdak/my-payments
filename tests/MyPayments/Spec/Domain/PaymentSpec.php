@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\MyPayments\Domain;
+namespace Spec\MyPayments\Domain;
 
 use MyPayments\Domain\Exception\Payment\DateOfPaymentException;
 use MyPayments\Domain\Payment\Name;
@@ -15,7 +15,7 @@ use SebastianBergmann\Money\Money;
 
 /**
  * Class PaymentSpec
- * @package spec\MyPayments\Domain\User
+ * @package Spec\MyPayments\Domain\User
  */
 class PaymentSpec extends ObjectBehavior
 {
