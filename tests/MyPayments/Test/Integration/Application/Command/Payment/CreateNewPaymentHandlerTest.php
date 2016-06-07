@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\MyPayments\Integration\Application\Command\Payment;
+namespace MyPayments\Test\Integration\Application\Command\Payment;
 
 use MyPayments\Application\Command\Payment\CreateNewPayment;
 use MyPayments\Application\Command\Payment\CreateNewPaymentHandler;
