@@ -26,10 +26,9 @@ interface Payments
 
     /**
      * @param PaymentId $paymentId
-     * @param UserId $userId
      *
      * @throws PaymentNotFoundException
      * @return Payment
      */
-    public function getPaymentByPaymentIdAndUserId(PaymentId $paymentId, UserId $userId) : Payment;
+    public function getPaymentByPaymentId(PaymentId $paymentId) : Payment;
 }

@@ -2,6 +2,7 @@
 
 namespace MyPayments\Domain\Payment;
 
+use MyPayments\Domain\Exception\Payment\DateOfPaymentException;
 use MyPayments\Domain\Payment\Installment\InstallmentId;
 use SebastianBergmann\Money\Currency;
 use SebastianBergmann\Money\Money;
@@ -36,6 +37,11 @@ class Installment
      * @var Currency
      */
     protected $installmentCurrency;
+
+    /**
+     * @var \DateTimeImmutable
+     */
+    protected $dateOfPaymentOf;
 
     /**
      * @param PaymentId $paymentId
@@ -89,5 +95,25 @@ class Installment
     public function getInstallmentCurrency() : Currency
     {
         return $this->installmentCurrency;
+    }
+    
+    /**
+     * @param \DateTimeImmutable $dateOfPaymentOf
+     * @throws DateOfPaymentException
+     */
+    public function markAsPaid(\DateTimeImmutable $dateOfPaymentOf)
+    {
+        if ($dateOfPaymentOf->getTimestamp() > (new \DateTimeImmutable('now'))->getTimestamp()) {
+            throw new DateOfPaymentException('Date of payment can not be in the future!');
+        }
+        $this->dateOfPaymentOf = $dateOfPaymentOf;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function isPaid() : bool
+    {
+        return !is_null($this->dateOfPaymentOf);
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MyPayments\Infrastructure\InMemory;
 
@@ -28,17 +28,16 @@ class InMemoryUsers implements Users
 
     /**
      * @param UserId $userId
+     *
      * @return User
      * @throws UserNotFoundException
      */
     public function getUserById(UserId $userId) : User
     {
-        foreach ($this->users as $user) {
-            if ($user->getUserId()->sameValueAs($userId)) {
-                return $user;
-            }
+        if (!array_key_exists((string) $userId, $this->users)) {
+            throw new UserNotFoundException();
         }
         
-        throw new UserNotFoundException;
+        return $this->users[(string) $userId];
     }
 }

@@ -18,7 +18,6 @@ interface Users
     /**
      * @param UserId $userId
      *
-     *
      * @return User
      */
     public function getUserById(UserId $userId) : User;
