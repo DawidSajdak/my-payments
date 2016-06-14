@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MyPayments\Infrastructure\InMemory;
 
@@ -19,6 +19,18 @@ class InMemoryPayments implements Payments
      */
     private $payments = [];
 
+    /**
+     * @param Payment[] $payments
+     */
+    public function __construct(array $payments = [])
+    {
+        $this->payments = [];
+        
+        foreach ($payments as $payment) {
+            $this->add($payment);
+        }
+    }
+    
     /**
      * @param Payment $payment
      */
@@ -46,19 +58,16 @@ class InMemoryPayments implements Payments
 
     /**
      * @param PaymentId $paymentId
-     * @param UserId $userId
      *
      * @throws PaymentNotFoundException
      * @return Payment
      */
-    public function getPaymentByPaymentIdAndUserId(PaymentId $paymentId, UserId $userId) : Payment
+    public function getPaymentByPaymentId(PaymentId $paymentId) : Payment
     {
-        foreach ($this->payments as $payment) {
-            if ($payment->getUserId()->sameValueAs($userId) && $payment->getPaymentId()->sameValueAs($paymentId)) {
-                return $payment;
-            }
+        if (!array_key_exists((string) $paymentId, $this->payments)) {
+            throw new PaymentNotFoundException();
         }
 
-        throw new PaymentNotFoundException;
+        return $this->payments[(string) $paymentId];
     }
 }

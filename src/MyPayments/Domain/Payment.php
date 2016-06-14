@@ -3,7 +3,9 @@
 namespace MyPayments\Domain;
 
 use MyPayments\Domain\Exception\Payment\DateOfPaymentException;
+use MyPayments\Domain\Exception\Payment\Installment\InstallmentNotFoundException;
 use MyPayments\Domain\Payment\Installment;
+use MyPayments\Domain\Payment\Installment\InstallmentId;
 use MyPayments\Domain\Payment\Name;
 use MyPayments\Domain\Payment\PaymentDate;
 use MyPayments\Domain\Payment\PaymentDetails;
@@ -215,12 +217,34 @@ class Payment
     }
 
     /**
+     * @param InstallmentId $installmentId
+     * @param \DateTimeImmutable $dateOfPaymentOf
+     *
+     * @throws DateOfPaymentException
+     * @throws InstallmentNotFoundException
+     */
+    public function markInstallmentAsPaid(InstallmentId $installmentId, \DateTimeImmutable $dateOfPaymentOf)
+    {
+        if (!array_key_exists((string) $installmentId, $this->installments)) {
+            throw new InstallmentNotFoundException();
+        }
+        
+        if ($dateOfPaymentOf->getTimestamp() > (new \DateTimeImmutable('now'))->getTimestamp()) {
+            throw new DateOfPaymentException('Date of payment can not be in the future!');
+        }
+
+        $this->installments[(string) $installmentId]->markAsPaid($dateOfPaymentOf);
+    }
+
+
+    /**
      * @param \DateTimeImmutable $installmentDate
      * @param Money $installmentAmount
      */
     private function addInstallment(\DateTimeImmutable $installmentDate, Money $installmentAmount)
     {
-        $this->installments[] = new Installment($this->paymentId, $installmentDate, $installmentAmount);
+        $installment = new Installment($this->paymentId, $installmentDate, $installmentAmount);
+        $this->installments[(string) $installment->getInstallmentId()] = $installment;
     }
 
     /**

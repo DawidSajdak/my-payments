@@ -3,8 +3,7 @@
 namespace MyPayments\Application\Command\Payment;
 
 use MyPayments\Application\Payment\Factory;
-use MyPayments\Domain\Exception\Payment\PaymentAlreadyExists;
-use MyPayments\Domain\Exception\UserDoesNotExistsException;
+use MyPayments\Application\Transaction\Factory as TransactionFactory;
 use MyPayments\Domain\Payment\PaymentDetails;
 use MyPayments\Domain\Payments;
 use MyPayments\Domain\User\UserId;
@@ -30,32 +29,34 @@ final class CreateNewPaymentHandler
      * @var Payments
      */
     private $payments;
+    
+    /**
+     * @var TransactionFactory
+     */
+    private $transactionFactory;
 
     /**
      * @param Factory $paymentFactory
      * @param Users $users
      * @param Payments $payments
+     * @param TransactionFactory $transactionFactory
      */
-    public function __construct(Factory $paymentFactory, Users $users, Payments $payments)
+    public function __construct(Factory $paymentFactory, Users $users, Payments $payments, TransactionFactory $transactionFactory)
     {
         $this->paymentFactory = $paymentFactory;
         $this->users = $users;
         $this->payments = $payments;
+        $this->transactionFactory = $transactionFactory;
     }
 
     /**
      * @param CreateNewPayment $command
      *
-     * @throws PaymentAlreadyExists
-     * @throws UserDoesNotExistsException
+     * @throws \Exception
      */
     public function handle(CreateNewPayment $command)
     {
-        $user = $this->users->getUserById(UserId::fromString($command->getUserId()));
-        
-        if (is_null($user)) {
-            throw new UserDoesNotExistsException;
-        }
+        $this->users->getUserById(UserId::fromString($command->getUserId()));
 
         $payment = $this->paymentFactory->createPayment(
             $command->getName(),
@@ -68,6 +69,14 @@ final class CreateNewPaymentHandler
             $command->getNumberOfInstallments()
         );
 
-        $this->payments->add($payment);
+        $transaction = $this->transactionFactory->open();
+
+        try {
+            $this->payments->add($payment);
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollback();
+            throw $e;
+        }
     }
 }
